@@ -21,7 +21,7 @@ type Props = {
     };
   };
 };
-export const TransactionDetailView = (props: Props) => {
+const TransactionDetailView = (props: Props) => {
   const {id} = props.route.params;
 
   const transactions = useTransactionsStore(state => state.transactions);
@@ -130,3 +130,5 @@ export const styles = StyleSheet.create({
     borderBottomColor: baseColor.bg,
   },
 });
+
+export default TransactionDetailView;

@@ -1,5 +1,3 @@
-import {TransactionDetailView} from '@app/screens/transaction-detail/transaction-detail.view';
-import {TransactionListView} from '@app/screens/transaction-list/transaction-list.view';
 import {baseColor} from '@app/utils/base-color';
 import {createNavigationContainerRef} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -18,7 +16,9 @@ const BaseRouter = () => {
     <Navigator>
       <Screen
         name="transaction-list"
-        component={TransactionListView}
+        component={
+          require('@app/screens/transaction-list/transaction-list.view').default
+        }
         options={{
           title: 'Transaksi',
           headerStyle: {backgroundColor: baseColor.orange},
@@ -27,7 +27,10 @@ const BaseRouter = () => {
       />
       <Screen
         name="transaction-detail"
-        component={TransactionDetailView}
+        component={
+          require('@app/screens/transaction-detail/transaction-detail.view')
+            .default
+        }
         options={{
           title: 'Detail Transaksi',
           headerStyle: {backgroundColor: baseColor.orange},

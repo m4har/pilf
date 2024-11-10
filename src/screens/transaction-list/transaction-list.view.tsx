@@ -9,7 +9,7 @@ import {useEffect, useMemo, useState} from 'react';
 import {FlatList, View} from 'react-native';
 import {searchAndFilterArrayData} from './transaction-list.utils';
 
-export const TransactionListView = () => {
+const TransactionListView = () => {
   const {fetchTransactions, loading, error, transactions, refetch, refreshing} =
     useTransactionsStore();
   const transactionList = useMemo(
@@ -71,3 +71,5 @@ export const TransactionListView = () => {
     </View>
   );
 };
+
+export default TransactionListView;
