@@ -1,6 +1,7 @@
 import {CardTransaction} from '@app/components/card';
 import {ModalFilter} from '@app/components/modal';
 import {SearchFilter} from '@app/components/search';
+import {navigationRef} from '@app/routes';
 import {baseColor} from '@app/utils/base-color';
 import {FILTER} from '@app/utils/constant';
 import {useState} from 'react';
@@ -80,7 +81,9 @@ export const TransactionListView = () => {
             date={item.completed_at}
             fromBank={item.beneficiary_bank}
             name={item.beneficiary_name}
-            onPress={() => {}}
+            onPress={() =>
+              navigationRef.navigate('transaction-detail', {id: item.id})
+            }
             status={item.status}
             toBank={item.sender_bank}
           />
