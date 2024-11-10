@@ -1,58 +1,28 @@
-import {CardTransaction} from '@app/components/card';
+import {CardListShimmer, CardTransaction} from '@app/components/card';
 import {ModalFilter} from '@app/components/modal';
 import {SearchFilter} from '@app/components/search';
 import {navigationRef} from '@app/routes';
+import {useTransactionsStore} from '@app/services/transaction-list/transaction-list.hooks';
 import {baseColor} from '@app/utils/base-color';
 import {FILTER} from '@app/utils/constant';
-import {useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {FlatList, View} from 'react-native';
-import {RESPONSE_LIST} from './mock-data';
+import {searchAndFilterArrayData} from './transaction-list.utils';
 
 export const TransactionListView = () => {
-  const transactionList = Object.values(RESPONSE_LIST);
+  const {fetchTransactions, loading, error, transactions, refetch, refreshing} =
+    useTransactionsStore();
+  const transactionList = useMemo(
+    () => Object.values(transactions ?? {}),
+    [transactions],
+  );
   const [showFilter, setShowFilter] = useState(false);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('');
 
-  function filterResults(
-    searchResults: typeof transactionList,
-    filterKey: string,
-  ) {
-    switch (filterKey) {
-      case 'asc':
-        return [...searchResults].sort((a, b) =>
-          a.beneficiary_name.localeCompare(b.beneficiary_name),
-        );
-      case 'desc':
-        return [...searchResults].sort((a, b) =>
-          b.beneficiary_name.localeCompare(a.beneficiary_name),
-        );
-      case 'newDate':
-        return [...searchResults].sort(
-          (a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-        );
-      case 'oldDate':
-        return [...searchResults].sort(
-          (a, b) =>
-            new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
-        );
-      default:
-        return searchResults;
-    }
-  }
-
-  function searchAndFilterArrayData(searchTerm: string, filterKey: string) {
-    const term = searchTerm.toLowerCase();
-    const searchResults = transactionList.filter(
-      item =>
-        item.amount.toString().includes(term) ||
-        item.beneficiary_name.toLowerCase().includes(term) ||
-        item.beneficiary_bank.toLowerCase().includes(term) ||
-        item.sender_bank.toLowerCase().includes(term),
-    );
-    return filterResults(searchResults, filterKey);
-  }
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
   return (
     <View style={{backgroundColor: baseColor.bg, flex: 1}}>
       <ModalFilter
@@ -73,8 +43,10 @@ export const TransactionListView = () => {
         />
       </View>
       <FlatList
-        data={searchAndFilterArrayData(search, filter)}
+        data={searchAndFilterArrayData(search, filter, transactionList)}
         keyExtractor={item => item.id}
+        refreshing={refreshing}
+        onRefresh={refetch}
         renderItem={({item}) => (
           <CardTransaction
             amount={item.amount}
@@ -87,6 +59,9 @@ export const TransactionListView = () => {
             status={item.status}
             toBank={item.sender_bank}
           />
+        )}
+        ListEmptyComponent={() => (
+          <CardListShimmer loading={loading} emptyLabel="Belum ada transaksi" />
         )}
         contentContainerStyle={{
           marginHorizontal: 10,
