@@ -1,9 +1,9 @@
-import BaseRouter from '@app/routes';
+import BaseRouter, {navigationRef} from '@app/routes';
 import {NavigationContainer} from '@react-navigation/native';
 
 export default function App() {
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <BaseRouter />
     </NavigationContainer>
   );
