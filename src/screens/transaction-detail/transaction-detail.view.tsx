@@ -1,6 +1,10 @@
 import {LabelDesc} from '@app/components/label';
+import {navigationRef} from '@app/routes';
+import {useTransactionsStore} from '@app/services/transaction-list/transaction-list.hooks';
 import {baseColor} from '@app/utils/base-color';
-import {useCallback, useState} from 'react';
+import {formatToRupiah} from '@app/utils/currency';
+import {formatDateToIndonesian} from '@app/utils/date';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -19,6 +23,12 @@ type Props = {
 };
 export const TransactionDetailView = (props: Props) => {
   const {id} = props.route.params;
+
+  const transactions = useTransactionsStore(state => state.transactions);
+  const transactionDetail = useMemo(
+    () => transactions?.[id] ?? null,
+    [transactions, id],
+  );
   const [showDetail, setShowDetail] = useState(false);
 
   const onShowHideDetail = useCallback(() => {
@@ -28,6 +38,12 @@ export const TransactionDetailView = (props: Props) => {
   const onCopyClipboard = useCallback(() => {
     ToastAndroid.show('ID Transaksi Telah Disalin', ToastAndroid.SHORT);
   }, []);
+
+  useEffect(() => {
+    if (!Boolean(transactionDetail)) {
+      navigationRef.goBack();
+    }
+  }, [transactionDetail]);
   return (
     <View style={styles.container}>
       <View style={styles.headerTitle}>
@@ -52,23 +68,31 @@ export const TransactionDetailView = (props: Props) => {
           {/* bank */}
           <View style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
             <Text style={{fontWeight: 'bold', textTransform: 'uppercase'}}>
-              Permata
+              {transactionDetail?.beneficiary_bank}
             </Text>
             <Icon name="arrow-forward" size={20} />
             <Text style={{fontWeight: 'bold', textTransform: 'uppercase'}}>
-              BNI
+              {transactionDetail?.sender_bank}
             </Text>
           </View>
           {/* desc */}
           <View style={{marginTop: 16, flexDirection: 'row'}}>
-            <LabelDesc style={{flex: 1}} title="syifa" desc="123" />
-            <LabelDesc style={{flex: 1}} title="nominal" desc="Rp 10.000" />
+            <LabelDesc
+              style={{flex: 1}}
+              title={transactionDetail?.beneficiary_name}
+              desc={transactionDetail?.account_number}
+            />
+            <LabelDesc
+              style={{flex: 1}}
+              title="nominal"
+              desc={formatToRupiah(transactionDetail?.amount ?? 0)}
+            />
           </View>
           <View style={{marginTop: 16, flexDirection: 'row'}}>
             <LabelDesc
               style={{flex: 1}}
               title="berita transfer"
-              desc="cobe test"
+              desc={transactionDetail?.remark}
             />
             <LabelDesc style={{flex: 1}} title="kode unik" desc="123" />
           </View>
@@ -76,7 +100,7 @@ export const TransactionDetailView = (props: Props) => {
             <LabelDesc
               style={{flex: 1}}
               title="waktu dibuat"
-              desc="8 april 2024"
+              desc={formatDateToIndonesian(transactionDetail?.created_at ?? '')}
             />
           </View>
         </View>
