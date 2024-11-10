@@ -1,8 +1,29 @@
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
+# notes
+
+```
+this project working well on android, because im not have mac 😁
+```
+
+## errors
+
+```
+when build on android error, close the metro bundler console, and run with,
+> npm run android
+
+because on windows have error permision when run with "npm start" and press run android
+```
+
+# Feature
+
+|          List           |           Detail            |
+| :---------------------: | :-------------------------: |
+| ![list](image/list.png) | ![detail](image/detail.png) |
+
 # Getting Started
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+> **Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
 ## Step 1: Start the Metro Server
 
