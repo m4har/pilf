@@ -1,8 +1,8 @@
 import {Text, View, ViewStyle} from 'react-native';
 
 type Props = {
-  title: string;
-  desc: string;
+  title?: string;
+  desc?: string;
   style?: ViewStyle;
 };
 
