@@ -1,4 +1,5 @@
 import {baseColor} from '@app/utils/base-color';
+import React, {useCallback, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -14,8 +15,20 @@ type Props = {
   labelFilter: string;
   onPressFilter: () => void;
 };
+
 export const SearchFilter = (props: Props) => {
   const {value, onChangeText, labelFilter, onPressFilter} = props;
+  const [inputValue, setInputValue] = useState(value);
+
+  const handleTextChange = useCallback(
+    (text: string) => {
+      setInputValue(text);
+      const handler = setTimeout(() => onChangeText(text), 300);
+      return () => clearTimeout(handler);
+    },
+    [onChangeText],
+  );
+
   return (
     <View style={styles.container}>
       <View style={styles.search}>
@@ -24,8 +37,8 @@ export const SearchFilter = (props: Props) => {
       <TextInput
         placeholder="Cari Nama, Bank, atau Nominal"
         style={styles.inputSearch}
-        value={value}
-        onChangeText={onChangeText}
+        value={inputValue}
+        onChangeText={handleTextChange}
       />
       <TouchableOpacity style={styles.btnFilter} onPress={onPressFilter}>
         <Text style={styles.txtFilter} numberOfLines={2}>
